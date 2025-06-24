@@ -1,0 +1,34 @@
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/testdb;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driverClassName: org.h2.Driver
+    username: demo
+    password: 77889900
+
+  h2:
+    console:
+      enabled: true
+      path: /console
+      settings:
+        web-allow-others: true
+  sql:
+    init:
+      schema-locations: classpath:/schema/sql.sql
+      data-locations: classpath:/data/sql.sql
+      mode: always
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  type-aliases-package: com.zwq.selfservice.entity
+server:
+  port: 9988
+api:
+  time_url: http://open.api.v1.sky1099.com/feasible-cmd/timed-task/device
+  open_url: http://open.api.v1.sky1099.com/feasible-cmd/real-time?save=1
+dy:
+  url:
+    validation: https://open.douyin.com/goodlife/v1/fulfilment/certificate/prepare/
+    verify: https://open.douyin.com/goodlife/v1/fulfilment/certificate/verify/
+    token: https://open.douyin.com/oauth/client_token/
+meituan:
+  url:
