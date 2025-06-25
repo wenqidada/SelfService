@@ -74,7 +74,7 @@ public class ApiServiceImpl2 implements ApiService {
 
 
     //开灯(定时关灯或直接开灯)
-    public Boolean open(DetailsTable detailsTable,int h) {
+    public Boolean open(DetailsTable detailsTable, int h) {
 
         int time = 0;
         if (Objects.isNull(detailsTable)){
@@ -107,7 +107,6 @@ public class ApiServiceImpl2 implements ApiService {
         }
         detailsTable.setStartTime(LocalDateTime.now());
         detailsTable.setTableNumber(detailsTable.getTableNumber());
-        detailsTable.setDone((byte)0);
         detailsTableService.save(detailsTable);
         return false;
     }
@@ -131,7 +130,6 @@ public class ApiServiceImpl2 implements ApiService {
         double hours = minutes / 60.0;
         BigDecimal bigDecimal = totalCost(detailsTable, hours);
         one.setEndTime(endTime);
-        one.setDone((byte)1);
         one.setMoney(bigDecimal);
         detailsTableService.updateById(one);
         return openAndClose(detailsTable.getCouponCode(),command,false,0);
@@ -191,7 +189,7 @@ public class ApiServiceImpl2 implements ApiService {
         return billiardTable.getCost().multiply(BigDecimal.valueOf(h));
     }
 
-    
+
     //小程序微信支付
 
 

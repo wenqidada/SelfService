@@ -1,5 +1,6 @@
 package com.zwq.selfservice.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -19,38 +20,44 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("DEPOSIT_TABLE")
-public class DepositTable implements Serializable {
+@TableName("WECHAT_TABLE")
+public class WechatTable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 存杆柜记录编号
+     * 主键ID
      */
     @TableId(value = "ID", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 存杆柜编号
+     * 用户唯一标识(小程序独立)
      */
-    @TableField("DEPOSIT_ID")
-    private Integer depositId;
+    @TableField("OPEN_ID")
+    private String openId;
 
     /**
-     * 用户信息
+     * session_key
      */
-    @TableField("DEPOSIT_USER")
-    private String depositUser;
+    @TableField("SESSION_KEY")
+    private String sessionKey;
 
     /**
-     * 存放开始时间
+     * 会话token
      */
-    @TableField("START_TIME")
-    private LocalDateTime startTime;
+    @TableField("TOKEN")
+    private String token;
 
     /**
-     * 结束时间
+     * 登陆时间
      */
-    @TableField("END_TIME")
-    private LocalDateTime endTime;
+    @TableField("LOGIN_TIME")
+    private LocalDateTime loginTime;
+
+    /**
+     * 创建时间
+     */
+    @TableField(value = "CREATE_TIME", fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
 }

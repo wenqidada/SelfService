@@ -37,7 +37,6 @@ public class DYImpl {
 
     /**
      * 调用抖音验证券码
-     * @return
      */
     public boolean verify(){
 
@@ -52,4 +51,7 @@ public class DYImpl {
 
     }
 
+    public boolean dYWriteOff(String code) {
+        return true;
+    }
 }

@@ -1,6 +1,6 @@
 package com.zwq.selfservice.dao;
 
-import com.zwq.selfservice.entity.VipInfoTable;
+import com.zwq.selfservice.entity.WechatTable;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author zwq
  * @since 2025-06-25
  */
-public interface VipInfoTableDao extends BaseMapper<VipInfoTable> {
+public interface WechatTableDao extends BaseMapper<WechatTable> {
 
 }

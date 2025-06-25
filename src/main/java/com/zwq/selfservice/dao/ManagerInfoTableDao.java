@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author zwq
- * @since 2025-02-16
+ * @since 2025-06-25
  */
 public interface ManagerInfoTableDao extends BaseMapper<ManagerInfoTable> {
 

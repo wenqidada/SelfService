@@ -16,7 +16,7 @@ import lombok.Setter;
  * </p>
  *
  * @author zwq
- * @since 2025-02-16
+ * @since 2025-06-25
  */
 @Getter
 @Setter
@@ -48,12 +48,6 @@ public class DetailsTable implements Serializable {
      */
     @TableField("END_TIME")
     private LocalDateTime endTime;
-
-    /**
-     * 是否结束,0否1是
-     */
-    @TableField("DONE")
-    private Byte done;
 
     /**
      * 开台类型,1会员2押金3定时4抖音5美团

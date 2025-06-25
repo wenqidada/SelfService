@@ -7,7 +7,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.charset.Charset;
 import java.util.Map;
 
 @Component
@@ -20,12 +19,12 @@ public class SendHttpRequestUtil {
     }
 
     // GET 请求
-    public <T> ResponseEntity<T> get(String url, Class<T> responseType, Map<String, String> headers) {
+    public <T> ResponseEntity<T> get(String url,Object requestEntity, Class<T> responseType, Map<String, String> headers) {
         HttpHeaders httpHeaders = new HttpHeaders();
         if (headers != null) {
             headers.forEach(httpHeaders::set);
         }
-        HttpEntity<String> entity = new HttpEntity<>(httpHeaders);
+        HttpEntity<Object> entity = new HttpEntity<>(requestEntity,httpHeaders);
         return restTemplate.exchange(url, HttpMethod.GET, entity, responseType);
     }
 

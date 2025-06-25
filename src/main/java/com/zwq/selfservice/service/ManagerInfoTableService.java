@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author zwq
- * @since 2025-02-16
+ * @since 2025-06-25
  */
 public interface ManagerInfoTableService extends IService<ManagerInfoTable> {
 

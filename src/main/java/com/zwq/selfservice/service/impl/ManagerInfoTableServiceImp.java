@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author zwq
- * @since 2025-02-16
+ * @since 2025-06-25
  */
 @Service
 public class ManagerInfoTableServiceImp extends ServiceImpl<ManagerInfoTableDao, ManagerInfoTable> implements ManagerInfoTableService {

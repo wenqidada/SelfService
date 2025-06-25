@@ -1,6 +1,6 @@
 package com.zwq.selfservice.service;
 
-import com.zwq.selfservice.entity.BilliardTable;
+import com.zwq.selfservice.entity.WechatTable;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author zwq
  * @since 2025-06-25
  */
-public interface BilliardTableService extends IService<BilliardTable> {
+public interface WechatTableService extends IService<WechatTable> {
 
 }

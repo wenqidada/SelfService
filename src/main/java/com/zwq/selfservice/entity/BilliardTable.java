@@ -17,7 +17,7 @@ import lombok.Setter;
  * </p>
  *
  * @author zwq
- * @since 2025-02-16
+ * @since 2025-06-25
  */
 @Getter
 @Setter
@@ -57,16 +57,22 @@ public class BilliardTable implements Serializable {
     private Byte tableType;
 
     /**
+     * 0正在使用,1未使用
+     */
+    @TableField("USE_TYPE")
+    private Byte useType;
+
+    /**
      * 费用/小时
      */
     @TableField("COST")
     private BigDecimal cost;
 
     /**
-     * 修改人编号
+     * 修改人
      */
-    @TableField("UPDATE_USER_ID")
-    private Byte updateUserId;
+    @TableField("UPDATE_USER")
+    private Byte updateUser;
 
     /**
      * 修改时间

@@ -31,4 +31,13 @@ dy:
     verify: https://open.douyin.com/goodlife/v1/fulfilment/certificate/verify/
     token: https://open.douyin.com/oauth/client_token/
 meituan:
+  appAuthToken: 1234567890abcdef1234567890abcdef
+  developerId: 1234567890
+  signKey: 1234567890abcdef1234567890abcdef
   url:
+    validation: https://api-open-cater.meituan.com/ddzh/tuangou/receipt/prepare
+    verify: https://api-open-cater.meituan.com/ddzh/tuangou/receipt/consume
+wx:
+  appid: wx8c0f2b3d1e4f5a6b
+  secret: 1a2b3c4d5e6f7g8h9i0j
+  login_url: https://api.weixin.qq.com/sns/jscode2session

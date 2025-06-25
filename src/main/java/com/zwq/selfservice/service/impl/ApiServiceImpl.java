@@ -16,7 +16,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,7 +56,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     //开灯(定时关灯或直接开灯)
-    public Boolean open(DetailsTable detailsTable,int h) {
+    public Boolean open(DetailsTable detailsTable, int h) {
 
         int time = 0;
         if (Objects.isNull(detailsTable)){
@@ -97,7 +96,6 @@ public class ApiServiceImpl implements ApiService {
         int i = h * 60 * 60;
         detailsTable.setStartTime(LocalDateTime.now());
         detailsTable.setEndTime(LocalDateTime.now().plusMinutes(i));
-        detailsTable.setDone(NO_DONE);
         //提交定时开台任务
         scheduledExecutorService.schedule(() -> close(detailsTable), i, TimeUnit.MINUTES );
     }
