@@ -79,4 +79,12 @@ public class WechatServiceImpl {
         }
     }
 
+    public boolean wxPay(String code) {
+        return true;
+    }
+
+    public boolean wxRefund(String code) {
+
+        return  true;
+    }
 }

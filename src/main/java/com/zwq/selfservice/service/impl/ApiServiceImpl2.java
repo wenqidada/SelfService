@@ -119,7 +119,7 @@ public class ApiServiceImpl2 implements ApiService {
         }
         DetailsTable one = detailsTableService.getOne(new QueryWrapper<DetailsTable>()
                 .eq("table_number", detailsTable.getTableNumber())
-                .eq("done", 0));
+                );
         if( one == null){
             return false;
         }
@@ -187,6 +187,11 @@ public class ApiServiceImpl2 implements ApiService {
             return new BigDecimal(0);
         }
         return billiardTable.getCost().multiply(BigDecimal.valueOf(h));
+    }
+
+    @Override
+    public String createQR(String command) {
+        return "";
     }
 
 

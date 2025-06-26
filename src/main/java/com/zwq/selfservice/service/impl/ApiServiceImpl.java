@@ -136,7 +136,7 @@ public class ApiServiceImpl implements ApiService {
 
         // 设置查询条件：时间在昨天0点到当前时间之间，且状态为1
         wrapper.between("start_time", startOfYesterdayStr, currentTimeStr)
-                .eq("done", 0);
+                ;
         List<DetailsTable> detailsTables = detailsTableService.listObjs(wrapper);
 
         //循环未结束订单,从新提交任务
@@ -153,6 +153,11 @@ public class ApiServiceImpl implements ApiService {
             }
         });
 
+    }
+
+    @Override
+    public String createQR(String command) {
+        return "";
     }
 
 

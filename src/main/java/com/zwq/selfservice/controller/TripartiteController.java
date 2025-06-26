@@ -1,5 +1,6 @@
 package com.zwq.selfservice.controller;
 
+import com.meituan.sdk.internal.exceptions.MtSdkException;
 import com.zwq.selfservice.service.impl.DYImpl;
 import com.zwq.selfservice.service.impl.MTImpl;
 import com.zwq.selfservice.service.impl.WechatServiceImpl;
@@ -33,26 +34,39 @@ public class TripartiteController {
     /**
      * 获取微信登录信息
      */
-    @RequestMapping(method= RequestMethod.GET,path = "/login")
+    @RequestMapping(method= RequestMethod.GET,path = "/wx/login")
     public WeChatResponseVO weChatLongin(String code, String id){
         log.info("微信登录接口被调用,code: {},token: {}", code,id);
         return wechatServiceImpl.weChatLongin(code,id);
     }
 
 
-    @RequestMapping(method= RequestMethod.GET,path = "/mt")
-    public boolean mtWriteOff(String code){
+    @RequestMapping(method= RequestMethod.GET,path = "/mt/verify")
+    public boolean mtWriteOff(String code) throws MtSdkException {
         log.info("美团核销券码,code: {}", code);
         return mTImpl.mtWriteOff(code);
     }
 
 
-    @RequestMapping(method= RequestMethod.GET,path = "/dy")
+    @RequestMapping(method= RequestMethod.GET,path = "/dy/verify")
     public boolean dyWriteOff(String code){
-        log.info("美团核销券码,code: {}", code);
+        log.info("抖音核销券码,code: {}", code);
         return dYImpl.dYWriteOff(code);
     }
 
+
+    @RequestMapping(method= RequestMethod.GET,path = "/wx/pay")
+    public boolean wxPay(String code){
+        log.info("微信支付,code: {}", code);
+        return wechatServiceImpl.wxPay(code);
+    }
+
+
+    @RequestMapping(method= RequestMethod.GET,path = "/wx/refund")
+    public boolean wxRefund(String code){
+        log.info("微信退款,code: {}", code);
+        return wechatServiceImpl.wxRefund(code);
+    }
 
 
 }

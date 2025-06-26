@@ -4,13 +4,12 @@ package com.zwq.selfservice.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zwq.selfservice.service.impl.ApiServiceImpl2;
+import com.zwq.selfservice.util.QRCodeUtil;
 import com.zwq.selfservice.vo.SwitchResponseVO;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,4 +45,10 @@ public class SwitchController {
         return apiServiceImpl2.openAndClose("861346077619133",command,false,1);
     }
 
+    @GetMapping("/qrcode")
+    public void getQRCode(@RequestParam String url, HttpServletResponse response) throws Exception {
+        byte[] qrImage = QRCodeUtil.generateQRCodeImage(url, 300, 300);
+        response.setContentType("image/png");
+        response.getOutputStream().write(qrImage);
+    }
 }
