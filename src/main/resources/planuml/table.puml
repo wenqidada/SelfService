@@ -1,0 +1,86 @@
+@startuml
+
+entity details_table {
+  * id : INT            -- 明细ID
+  --
+  user_info : VARCHAR   -- 用户open_id
+  start_time : TIMESTAMP -- 开始时间
+  end_time : TIMESTAMP   -- 结束时间
+  open_type : TINYINT    -- 开台类型
+  table_number : TINYINT -- 球台编号
+  coupon_code : VARCHAR  -- 优惠券码
+  money : DECIMAL        -- 金额
+}
+
+entity billiard_table {
+  * table_number : INT   -- 球台编号
+  --
+  lock_no : VARCHAR      -- 锁编号
+  QR_code : VARCHAR      -- 二维码
+  table_info : VARCHAR   -- 球台信息
+  table_type : TINYINT   -- 球台类型
+  use_type : TINYINT     -- 使用类型
+  cost : DECIMAL         -- 费用
+  update_user : TINYINT  -- 更新人
+  update_time : TIMESTAMP -- 更新时间
+}
+
+entity vip_info_table {
+  * vip_id : INT         -- 会员ID
+  --
+  vip_user : VARCHAR     -- 会员open_id
+  balance : DECIMAL      -- 余额
+  create_time : TIMESTAMP -- 创建时间
+  update_time : TIMESTAMP -- 更新时间
+}
+
+entity deposit_table {
+  * id : INT             -- 押金ID
+  --
+  deposit_id : INT       -- 押金编号
+  deposit_user : VARCHAR -- 押金用户open_id
+  start_time : TIMESTAMP -- 开始时间
+  end_time : TIMESTAMP   -- 结束时间
+}
+
+entity manager_info_table {
+  * manager_id : INT     -- 管理员ID
+  --
+  manager_name : VARCHAR -- 管理员姓名
+  password : VARCHAR     -- 密码
+  phone : VARCHAR        -- 电话
+  wechat : VARCHAR       -- 微信
+  create_time : TIMESTAMP -- 创建时间
+  update_time : TIMESTAMP -- 更新时间
+}
+
+entity wechat_table {
+  * id : INT             -- 微信表ID
+  --
+  open_id : VARCHAR      -- open_id
+  session_key : VARCHAR  -- 会话密钥
+  token : VARCHAR        -- token
+  login_time : TIMESTAMP -- 登录时间
+  create_time : TIMESTAMP -- 创建时间
+}
+
+entity tripartite_table {
+  * id : INT             -- 三方ID
+  --
+  platform_type : TINYINT -- 平台类型
+  codes : VARCHAR        -- 优惠券码
+  encrypted_codes : VARCHAR -- 加密券码
+  request_id : VARCHAR   -- 请求ID
+  actual_payment : DECIMAL -- 实付金额
+  amount : DECIMAL       -- 金额
+  create_time : TIMESTAMP -- 创建时间
+}
+
+' 关系（带箭头）
+details_table::user_info --> wechat_table::open_id : 用户
+details_table::table_number --> billiard_table::table_number : 球台
+details_table::coupon_code --> tripartite_table::codes : 优惠券
+vip_info_table::vip_user --> wechat_table::open_id : 会员用户
+deposit_table::deposit_user --> wechat_table::open_id : 押金用户
+
+@enduml

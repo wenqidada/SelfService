@@ -138,6 +138,12 @@
 			<systemPath>${project.basedir}/src/main/resources/lib/MtOpJavaSDK-1.0-SNAPSHOT.jar</systemPath>
 		</dependency>
 
+		<dependency>
+			<groupId>com.github.wechatpay-apiv3</groupId>
+			<artifactId>wechatpay-java</artifactId>
+			<version>0.2.17</version>
+		</dependency>
+
 		<!-- Spring Boot Starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

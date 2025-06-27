@@ -42,4 +42,11 @@ meituan:
 wx:
   appid: wx8c0f2b3d1e4f5a6b
   secret: 1a2b3c4d5e6f7g8h9i0j
+  merchantId: 1234567890
+  privateKeyPath: /path/to/your/private/key.pem
+  merchantSerialNumber: 1234567890abcdef
+  api_v3_key: 1234567890abcdef1234567890abcdef
+  sp_mchid: 1234567890
   login_url: https://api.weixin.qq.com/sns/jscode2session
+  jsapi_url: https://api.mch.weixin.qq.com//v3/pay/partner/transactions/jsapi
+  refunds_url: https://api.mch.weixin.qq.com/v3/refund/domestic/refunds

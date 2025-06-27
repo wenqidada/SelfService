@@ -1,6 +1,8 @@
 package com.zwq.selfservice.controller;
 
 import com.meituan.sdk.internal.exceptions.MtSdkException;
+import com.wechat.pay.java.service.payments.model.Transaction;
+import com.wechat.pay.java.service.refund.model.Refund;
 import com.zwq.selfservice.service.impl.DYImpl;
 import com.zwq.selfservice.service.impl.MTImpl;
 import com.zwq.selfservice.service.impl.WechatServiceImpl;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/tripartite")
@@ -56,17 +57,38 @@ public class TripartiteController {
 
 
     @RequestMapping(method= RequestMethod.GET,path = "/wx/pay")
-    public boolean wxPay(String code){
-        log.info("微信支付,code: {}", code);
-        return wechatServiceImpl.wxPay(code);
+    public String wxPay(Integer total,String openid){
+        log.info("微信支付,金额为: {},用户ID:{}",total,openid);
+        return wechatServiceImpl.wxPay(total, openid);
     }
-
 
     @RequestMapping(method= RequestMethod.GET,path = "/wx/refund")
-    public boolean wxRefund(String code){
-        log.info("微信退款,code: {}", code);
-        return wechatServiceImpl.wxRefund(code);
+    public boolean wxRefund(String transactionId,String outTradeNo,Integer total){
+        log.info("微信退款,订单Id: {}, 商户Id :{}, 退款金额:{}", transactionId, outTradeNo, total);
+        return wechatServiceImpl.wxRefund(transactionId,outTradeNo, total);
     }
 
+    @RequestMapping(method= RequestMethod.POST,path = "/wx/pay/callback")
+    public void wxPayCallback(String xmlData) {
+        log.info("微信支付回调,xmlData: {}", xmlData);
+    }
+
+    @RequestMapping(method= RequestMethod.POST,path = "/wx/refund/callback")
+    public void wxRefundCallback(String xmlData) {
+        log.info("微信退款回调,xmlData: {}", xmlData);
+    }
+
+
+    @RequestMapping(method= RequestMethod.GET,path = "/wx/payInfo")
+    public Transaction getWxPay(String transactionId){
+        log.info("获取微信支付信息====================");
+        return wechatServiceImpl.getWxPay(transactionId);
+    }
+
+    @RequestMapping(method= RequestMethod.GET,path = "/wx/refundInfo")
+    public Refund getWxRefund(String refundId){
+        log.info("获取微信退款信息====================");
+        return wechatServiceImpl.getWxRefund(refundId);
+    }
 
 }
