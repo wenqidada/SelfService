@@ -11,8 +11,8 @@ import com.meituan.sdk.model.ddzh.tuangou.tuangouReceiptPrepare.TuangouReceiptPr
 import com.meituan.sdk.model.ddzh.tuangou.tuangouReceiptPrepare.TuangouReceiptPrepareResponse;
 import com.zwq.selfservice.entity.TripartiteTable;
 import com.zwq.selfservice.service.TripartiteTableService;
-import com.zwq.selfservice.util.SendHttpRequestUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class MTImpl {
     @Value("meituan.developerId")
     private String developerId;
 
-    public boolean mtWriteOff(String code) throws MtSdkException {
+    public Pair<String, Double> mtWriteOff(String code) throws MtSdkException {
 
         MeituanClient meituanClient = DefaultMeituanClient.builder(Long.valueOf(developerId), signKey).build();
 
@@ -80,14 +80,14 @@ public class MTImpl {
                 tripartiteTable.setActualPayment(BigDecimal.valueOf(verifyResp.getDealPrice()));
                 tripartiteTableService.save(tripartiteTable);
                 log.info("美团核销券码接口成功返回====={}",verifyResp);
-                return true;
+                return Pair.of(requestId, verifyResp.getDealPrice());
             } else {
                 log.error("美团核销券码调用失败===={}",verifyResponse);
-                return false;
+                return Pair.of(requestId, 0.0);
             }
         } else {
             log.error("美团验证券码失败===={}", response);
-            return false;
+            return Pair.of("", 0.0);
         }
 
     }

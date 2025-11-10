@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class WeChatResponseVO {
 
+    private int code;
     private String id;
     private String token;
 

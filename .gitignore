@@ -1,5 +1,5 @@
 # 忽略编译输出
-/target/*.class
+/target/*
 
 # 忽略IDE配置
 .idea/*.iml

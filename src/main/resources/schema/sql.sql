@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS details_table (
     open_type tinyint(1),
     table_number tinyint(2),
     coupon_code VARCHAR(255),
-    money DECIMAL(4, 2)
+    money DECIMAL(6, 2)
     );
 
 COMMENT ON COLUMN details_table.id IS '编号';
@@ -15,7 +15,7 @@ COMMENT ON COLUMN details_table.start_time IS '开台时间';
 COMMENT ON COLUMN details_table.end_time IS '结束时间';
 COMMENT ON COLUMN details_table.open_type IS '开台类型,1会员2押金3定时4抖音5美团';
 COMMENT ON COLUMN details_table.table_number IS '台号';
-COMMENT ON COLUMN details_table.coupon_code IS '劵码,无劵码为0';
+COMMENT ON COLUMN details_table.coupon_code IS '劵码,无劵码为订单ID';
 COMMENT ON COLUMN details_table.money IS '消费金额';
 
 CREATE TABLE IF NOT EXISTS billiard_table (
@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS billiard_table (
     table_info VARCHAR(255),
     table_type tinyint(1),
     use_type tinyint(1),
-    cost DECIMAL(2, 2),
+    cost DECIMAL(4, 2),
+    idle_cost DECIMAL(4, 2),
+    other_cost DECIMAL(4, 2),
     update_user tinyint(2),
     update_time TIMESTAMP
     );
@@ -35,8 +37,10 @@ COMMENT ON COLUMN billiard_table.lock_no IS '锁编号';
 COMMENT ON COLUMN billiard_table.QR_code IS '二维码链接';
 COMMENT ON COLUMN billiard_table.table_info IS '球桌信息';
 COMMENT ON COLUMN billiard_table.table_type IS '台子类型,1台球桌2棋牌室3存杆柜';
-COMMENT ON COLUMN billiard_table.use_type IS '0正在使用,1未使用';
+COMMENT ON COLUMN billiard_table.use_type IS '0未使用,1使用';
 COMMENT ON COLUMN billiard_table.cost IS '费用/小时';
+COMMENT ON COLUMN billiard_table.idle_cost IS '闲时费用/小时';
+COMMENT ON COLUMN billiard_table.other_cost IS '其它费用/小时';
 COMMENT ON COLUMN billiard_table.update_user IS '修改人';
 COMMENT ON COLUMN billiard_table.update_time IS '修改时间';
 
@@ -115,8 +119,8 @@ CREATE TABLE IF NOT EXISTS tripartite_table (
     codes VARCHAR(255),
     encrypted_codes VARCHAR(255),
     request_id VARCHAR(255),
-    actual_payment DECIMAL(4, 2),
-    amount DECIMAL(4, 2),
+    actual_payment DECIMAL(6, 2),
+    amount DECIMAL(6, 2),
     create_time TIMESTAMP
     );
 
@@ -128,3 +132,4 @@ COMMENT ON COLUMN tripartite_table.request_id IS '请求Id';
 COMMENT ON COLUMN tripartite_table.actual_payment IS '实付金额';
 COMMENT ON COLUMN tripartite_table.amount IS '订单金额';
 COMMENT ON COLUMN tripartite_table.create_time IS '创建时间';
+

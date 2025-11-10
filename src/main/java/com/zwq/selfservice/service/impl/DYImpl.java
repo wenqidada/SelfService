@@ -5,6 +5,7 @@ import com.zwq.selfservice.service.TripartiteTableService;
 import com.zwq.selfservice.util.SendHttpRequestUtil;
 import com.zwq.selfservice.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class DYImpl {
 
 
 
-    public boolean dYWriteOff(String code) {
+    public Pair<String,Double> dYWriteOff(String code) {
         // 1. 调用接口获取token
         DyAuthRequest build = DyAuthRequest.builder().clientSecret(clientSecret).clientKey(clientKey).grantType(grantType).build();
         HashMap<String, String> headerMap = new HashMap<>();
@@ -101,11 +102,11 @@ public class DYImpl {
                         tripartiteTable.setActualPayment(BigDecimal.valueOf(payAmount));
                         tripartiteTableService.save(tripartiteTable);
                         log.info("抖音核销券码成功,响应体: {}", verifyBody);
-                        return true;
+                        return Pair.of(certificate1.getSku().getTitle(),payAmount/100.0);
                     }
                 }
             }
         }
-        return false;
+        return Pair.of("",0.0);
     }
 }

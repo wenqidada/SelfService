@@ -9,8 +9,8 @@ public class WeChatLoginRequest {
 
     private String appid;
     private String secret;
-    private String jsCode;
+    private String js_Code;
     @Builder.Default
-    private String grantType = "authorization_code";
+    private String grant_Type = "authorization_code";
 
 }

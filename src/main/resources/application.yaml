@@ -5,7 +5,6 @@ spring:
     driverClassName: org.h2.Driver
     username: demo
     password: 77889900
-
   h2:
     console:
       enabled: true
@@ -21,10 +20,12 @@ mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   type-aliases-package: com.zwq.selfservice.entity
 server:
-  port: 9988
+  port: 9527
 api:
   time_url: http://open.api.v1.sky1099.com/feasible-cmd/timed-task/device
-  open_url: http://open.api.v1.sky1099.com/feasible-cmd/real-time?save=1
+  open_url: http://open.api.v1.sky1099.com/feasible-cmd/real-time
+  status_url: http://open.api.v1.sky1099.com/feasible-cmd/status/{sn}/{cmdId}
+  token: 3EFAD0DAAAE6856819E3C4B24E544408
 dy:
   client_key: 1234567890abcdef1234567890abcdef
   client_secret: 1234567890abcdef1234567890abcdef
@@ -40,13 +41,27 @@ meituan:
   developerId: 1234567890
   signKey: 1234567890abcdef1234567890abcdef
 wx:
-  appid: wx8c0f2b3d1e4f5a6b
-  secret: 1a2b3c4d5e6f7g8h9i0j
-  merchantId: 1234567890
-  privateKeyPath: /path/to/your/private/key.pem
-  merchantSerialNumber: 1234567890abcdef
+  appid: wx126e3fe46360ef63
+  secret: a51262023f65f6e524cd53b05cedd516
+  merchantId: 1724943901
+  privateKeyPath: D:\\Download\\WXCertUtil\\cert\\1724943901_20250816_cert\\apiclient_key.pem
+  merchantSerialNumber: 6D52855F56159214B0843188F1E081780B8B02C5
   api_v3_key: 1234567890abcdef1234567890abcdef
-  sp_mchid: 1234567890
+  sp_mchid: 1724943901
   login_url: https://api.weixin.qq.com/sns/jscode2session
   jsapi_url: https://api.mch.weixin.qq.com//v3/pay/partner/transactions/jsapi
   refunds_url: https://api.mch.weixin.qq.com/v3/refund/domestic/refunds
+yunfei:
+  url: http://wspacebot.yunfeiwork.com
+  appId: 83e95a6f184bf24268a89d692741f540
+  appSecret: e9509baf8ff4da7c07856774b42877be
+  dyOpPoiId: 18963
+  mtOpPoiId: 18962
+info:
+  desc: "充50送50,充100送105\n充200送215,充500送550"
+  deposit: 5000
+  price:
+    "50": 50
+    "100": 105
+    "200": 215
+    "500": 550

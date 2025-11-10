@@ -1,12 +1,25 @@
 package com.zwq.selfservice.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zwq.selfservice.entity.DetailsTable;
+import com.zwq.selfservice.entity.WechatTable;
+import com.zwq.selfservice.service.ApiService;
 import com.zwq.selfservice.service.DetailsTableService;
+import com.zwq.selfservice.service.WechatTableService;
+import com.zwq.selfservice.util.ResponseData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.zwq.selfservice.util.CommonConstant.OPEN_DEPOSIT_TYPE;
+import static com.zwq.selfservice.util.CommonConstant.OPEN_VIP_TYPE;
 
 /**
  * <p>
@@ -23,6 +36,15 @@ public class DetailsTableController {
 
     @Autowired
     private DetailsTableService detailsTableService;
+
+    @Autowired
+    private WechatTableService wechatTableService;
+
+    @Autowired
+    private ApiService apiService;
+
+    @Value("${info.desc}")
+    public String descInfo;
 
     // 新增
     @PostMapping
@@ -67,5 +89,49 @@ public class DetailsTableController {
         log.info("调用delete方法，参数id: {}", id);
         detailsTableService.removeById(id);
         log.info("删除明细记录，id: {}，结果: 成功", id);
+    }
+
+    @CrossOrigin(origins = "*", maxAge = 3600)
+    @RequestMapping(method = RequestMethod.GET, path = "/getInfo")
+    public ResponseData getInfo(String token,String tableId,int type) {
+        log.info("获取开台信息======tableId:{},type:{}",tableId,type);
+        ResponseData responseData = new ResponseData();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("descInfo",descInfo);
+        WechatTable wechatInfo = wechatTableService.getOne(new QueryWrapper<WechatTable>()
+                .eq("TOKEN",token));
+        List<DetailsTable> list = detailsTableService.list(new QueryWrapper<DetailsTable>()
+                .eq("table_number", tableId)
+                .eq("user_info", wechatInfo.getOpenId())
+                .orderByDesc( "start_time"));
+        if (list == null || list.isEmpty()){
+            responseData.setCode(400);
+            return responseData;
+        }
+        DetailsTable detailsTable = list.get(0);
+        LocalDateTime startTime = detailsTable.getStartTime();
+        LocalDateTime endTime = detailsTable.getEndTime();
+        if (endTime != null && endTime.isBefore(LocalDateTime.now())) {
+            responseData.setCode(400);
+            return responseData;
+        }
+        if (type == 0){
+            type = detailsTable.getOpenType();
+        }
+        long seconds;
+        if (OPEN_VIP_TYPE == type || OPEN_DEPOSIT_TYPE == type) {
+            long epochSecond = startTime.atZone(ZoneId.systemDefault()).toEpochSecond();
+            seconds = Duration.between(startTime, LocalDateTime.now()).toSeconds();
+            long maxSeconds = apiService.getOpenTime(Integer.parseInt(tableId) + 110) - epochSecond;
+            map.put("maxSeconds",maxSeconds);
+        } else {
+            seconds = Duration.between(LocalDateTime.now(), endTime).toSeconds();
+            map.put("maxSeconds",0);
+        }
+        map.put("remainingSeconds", String.valueOf(seconds));
+        map.put("type", detailsTable.getOpenType());
+        responseData.setCode(200);
+        responseData.setData(map);
+        return responseData;
     }
 }

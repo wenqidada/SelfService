@@ -16,6 +16,6 @@ import java.util.List;
  */
 public interface BilliardTableService extends IService<BilliardTable> {
 
-    List<GetTableResponse> getTables();
+    List<GetTableResponse> getTables(boolean flag);
 
 }

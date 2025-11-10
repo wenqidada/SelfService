@@ -8,7 +8,7 @@ public class SwitchResponseVO {
     //状态码
     private int code;
     //返回信息
-    private String msg;
+    private String message;
     //数据体
     private String data;
 

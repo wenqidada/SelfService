@@ -1,5 +1,6 @@
 package com.zwq.selfservice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zwq.selfservice.entity.BilliardTable;
 import com.zwq.selfservice.dao.BilliardTableDao;
 import com.zwq.selfservice.service.BilliardTableService;
@@ -21,8 +22,14 @@ import java.util.List;
 public class BilliardTableServiceImp extends ServiceImpl<BilliardTableDao, BilliardTable> implements BilliardTableService {
 
     @Override
-    public List<GetTableResponse> getTables() {
-        List<BilliardTable> list = this.list();
+    public List<GetTableResponse> getTables(boolean flag) {
+        List<BilliardTable> list;
+        //只返回台球桌
+        if (flag){
+            list = this.list();
+        }else {
+            list = this.list(new QueryWrapper<BilliardTable>().eq("table_type",1));
+        }
         return list.stream().map(billiardTable -> GetTableResponse.builder()
                 .tableNumber(billiardTable.getTableNumber())
                 .useType(billiardTable.getUseType())

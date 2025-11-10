@@ -68,6 +68,21 @@ public class BilliardTable implements Serializable {
     @TableField("COST")
     private BigDecimal cost;
 
+
+    /**
+     * 闲时费用/小时
+     */
+    @TableField("IDLE_COST")
+    private BigDecimal idleCost;
+
+
+    /**
+     * 其它费用/小时
+     */
+    @TableField("OTHER_COST")
+    private BigDecimal otherCost;
+
+
     /**
      * 修改人
      */

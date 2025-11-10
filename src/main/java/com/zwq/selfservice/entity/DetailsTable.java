@@ -62,7 +62,7 @@ public class DetailsTable implements Serializable {
     private Byte tableNumber;
 
     /**
-     * 劵码,无劵码为0
+     * 劵码,无劵码为订单ID
      */
     @TableField("COUPON_CODE")
     private String couponCode;
