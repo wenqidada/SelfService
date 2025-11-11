@@ -25,7 +25,7 @@ public class BilliardTableServiceImp extends ServiceImpl<BilliardTableDao, Billi
     public List<GetTableResponse> getTables(boolean flag) {
         List<BilliardTable> list;
         //只返回台球桌
-        if (flag){
+        if (!flag){
             list = this.list();
         }else {
             list = this.list(new QueryWrapper<BilliardTable>().eq("table_type",1));
