@@ -132,6 +132,11 @@ public class ApiServiceImpl2 implements ApiService {
         DetailsTable detailsTable = new DetailsTable();
         TripartiteTable tripartiteTable = new TripartiteTable();
         BilliardTable billiardTable = billiardTableService.getById(openTableRequest.getTableId());
+        if (billiardTable.getUseType() != 0){
+            responseData.setCode(400);
+            responseData.setMessage("球桌已开台,请勿重复开台");
+            return responseData;
+        }
         String tableInfo = billiardTable.getTableInfo();
         String lockNo = billiardTable.getLockNo();
         WechatTable wechatInfo = wechatTableService.getOne(
