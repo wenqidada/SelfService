@@ -30,13 +30,13 @@ public class SwitchController {
 
 
     @RequestMapping(path = "/postdata",method = RequestMethod.POST)
-    public SwitchResponseVO receiveStatus(Map<String,String> body){
-        log.info("开关接收body为=======================:{}",body);
-        String data = body.get("data");
-        JSONObject jsonObject = JSON.parseObject(data);
-        String serialNumber = jsonObject.get("serialNumber").toString();
-        String type = jsonObject.get("type").toString();
-        String event = jsonObject.get("event").toString();
+    public SwitchResponseVO receiveStatus(@RequestBody String rawBody){
+        log.info("开关接收body为=======================:{}",rawBody);
+        JSONObject body = JSON.parseObject(rawBody);
+        JSONObject data = body.getJSONObject("data");
+        String serialNumber = data.get("serialNumber").toString();
+        String type = data.get("type").toString();
+        String event = data.get("event").toString();
         SwitchController.switchTypeMap.put(serialNumber,type);
         SwitchResponseVO switchResponseVO = new SwitchResponseVO();
         switchResponseVO.setCode(200);

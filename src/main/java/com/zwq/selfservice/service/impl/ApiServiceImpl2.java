@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -120,7 +121,7 @@ public class ApiServiceImpl2 implements ApiService {
         this.yunFeiService = yunFeiService;
     }
 
-    private final Map<Integer,String> openTime = new HashMap<>();
+    private final Map<Integer,String> openTime = new ConcurrentHashMap<>();
 
 
 
@@ -143,6 +144,7 @@ public class ApiServiceImpl2 implements ApiService {
                 new QueryWrapper<WechatTable>().eq("token", openTableRequest.getToken()));
         String code = StringUtils.deleteWhitespace(openTableRequest.getCode());
         if (OPEN_YIN_TYPE == openTableRequest.getType() || OPEN_TUAN_TYPE == openTableRequest.getType()){
+            openTime.remove(110+billiardTable.getTableNumber());
             int time = 0;
             ConsumeRequest consumeRequest = new ConsumeRequest();
             consumeRequest.setType("1");
@@ -198,6 +200,7 @@ public class ApiServiceImpl2 implements ApiService {
             }
         }
         if (OPEN_VIP_TYPE == openTableRequest.getType() || OPEN_DEPOSIT_TYPE == openTableRequest.getType()) {
+            openTime.remove(billiardTable.getTableNumber());
             if (OPEN_VIP_TYPE == openTableRequest.getType()){
                 log.info("会员开台==============={}", billiardTable.getTableNumber());
                 VipInfoTable vip = vipInfoTableService.getOne(new QueryWrapper<VipInfoTable>()
@@ -231,6 +234,7 @@ public class ApiServiceImpl2 implements ApiService {
         }
 
         if (OPEN_TIME_TYPE == openTableRequest.getType()) {
+            openTime.remove(110+billiardTable.getTableNumber());
             log.info("定时开台==============={}", billiardTable.getTableNumber());
             amont = getPrice(String.valueOf(billiardTable.getTableNumber()),"3",
                     openTableRequest.getTime()).doubleValue();
@@ -342,18 +346,18 @@ public class ApiServiceImpl2 implements ApiService {
                 vipInfo.setBalance(new BigDecimal(0));
             }
             vipInfoTableService.updateById(vipInfo);
-            LocalDateTime endTime = LocalDateTime.now();
-            one.setEndTime(endTime);
-            one.setMoney(request.getPrice());
-            detailsTableService.updateById(one);
             flag = openAndClose(tableInfo, lockNo + "_0", false, 0);
             if (flag){
                 TripartiteTable tripartiteTable = new TripartiteTable();
-                tripartiteTable.setAmount(request.getPrice());
+                tripartiteTable.setAmount(price);
                 tripartiteTable.setRequestId(request.getToken()+LocalDateTime.now());
                 tripartiteTable.setCreateTime(LocalDateTime.now());
                 tripartiteTable.setPlatformType((byte)3);
                 tripartiteTableService.save(tripartiteTable);
+                LocalDateTime endTime = LocalDateTime.now();
+                one.setEndTime(endTime);
+                one.setMoney(price);
+                detailsTableService.updateById(one);
                 table.setUseType((byte)0);
                 billiardTableService.updateById(table);
                 responseData.setCode(200);
@@ -451,7 +455,7 @@ public class ApiServiceImpl2 implements ApiService {
         ResponseEntity<SwitchResponseVO> post;
         switchRequestVO.setSerialNumber(number);
         if (SwitchController.switchTypeMap.get(number) == null){
-            switchRequestVO.setType("YD34");
+            switchRequestVO.setType("YA34");
         }else {
             switchRequestVO.setType(SwitchController.switchTypeMap.get(number));
         }
@@ -605,10 +609,16 @@ public class ApiServiceImpl2 implements ApiService {
             return;
         }
         tableList.forEach(table -> {
-            if (openTime.get(table.getTableNumber()) != null) {
-                String[] s = openTime.get(table.getTableNumber()).split("_");
+            if (openTime.get(table.getTableNumber()) != null || openTime.get(110+table.getTableNumber()) != null) {
+                String[] s;
+                if (openTime.get(table.getTableNumber()) != null){
+                    s = openTime.get(table.getTableNumber()).split("_");
+                }else {
+                    s = openTime.get(110+table.getTableNumber()).split("_");
+                }
                 long endTime = Long.parseLong(s[s.length - 1]);
                 if (now > endTime){
+                    log.info("定时任务更新球桌信息=========桌号{},=========结束时间{}",table.getTableNumber(),endTime);
                     table.setUseType((byte)0);
                     billiardTableService.updateById(table);
                     //求桌更新后,删除定时球桌信息
@@ -621,7 +631,7 @@ public class ApiServiceImpl2 implements ApiService {
             for (Map.Entry<Integer, String> entry : openTime.entrySet()) {
                 String[] s = entry.getValue().split("_");
                 long endTime = Long.parseLong(s[s.length - 1]);
-                if (now < endTime){
+                if (now > endTime){
                     // 会员开台,余额不足时关闭台球桌
                     if (entry.getKey() > 110) {
                         BilliardTable one = billiardTableService.getOne(new QueryWrapper<BilliardTable>().eq("table_number",entry.getKey()-110));
@@ -634,25 +644,27 @@ public class ApiServiceImpl2 implements ApiService {
                                     .isNull("end_time"));
                             LocalDateTime time = LocalDateTime.now();
                             BigDecimal balance;
-                            if (entry.getValue().startsWith("vip")){
-                                //更新vip余额
-                                VipInfoTable vipInfoTable = vipInfoTableService.getOne(new QueryWrapper<VipInfoTable>()
-                                        .eq("vip_user",detailsTable.getUserInfo()));
-                                balance = vipInfoTable.getBalance();
-                                vipInfoTable.setUpdateTime(time);
-                                vipInfoTable.setBalance(BigDecimal.valueOf(0));
-                                vipInfoTableService.updateById(vipInfoTable);
-                            }else {
-                                balance = BigDecimal.valueOf(deposit);
+                            if (detailsTable != null && detailsTable.getUserInfo() != null){
+                                if (entry.getValue().startsWith("vip")){
+                                    //更新vip余额
+                                    VipInfoTable vipInfoTable = vipInfoTableService.getOne(new QueryWrapper<VipInfoTable>()
+                                            .eq("vip_user",detailsTable.getUserInfo()));
+                                    balance = vipInfoTable.getBalance();
+                                    vipInfoTable.setUpdateTime(time);
+                                    vipInfoTable.setBalance(BigDecimal.valueOf(0));
+                                    vipInfoTableService.updateById(vipInfoTable);
+                                }else {
+                                    balance = BigDecimal.valueOf(deposit);
+                                }
+                                //更新明细表结束时间
+                                detailsTable.setEndTime(time);
+                                detailsTable.setMoney(balance);
+                                detailsTableService.updateById(detailsTable);
                             }
-                            //更新明细表结束时间
-                            detailsTable.setEndTime(time);
-                            detailsTable.setMoney(balance);
-                            detailsTableService.updateById(detailsTable);
                         }
-                    }else {
-                        scheduledCommand.append(entry.getValue()).append(";");
                     }
+                }else {
+                    scheduledCommand.append(entry.getValue()).append(";");
                 }
             }
             if (!scheduledCommand.isEmpty()) {
