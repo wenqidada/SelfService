@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.zwq.selfservice.util.CommonConstant.OPEN_DEPOSIT_TYPE;
 import static com.zwq.selfservice.util.CommonConstant.OPEN_VIP_TYPE;
@@ -130,8 +131,20 @@ public class DetailsTableController {
         }
         map.put("remainingSeconds", String.valueOf(seconds));
         map.put("type", detailsTable.getOpenType());
+        log.info("获取台球桌返回信息======{}",map);
         responseData.setCode(200);
         responseData.setData(map);
         return responseData;
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/OpenTime")
+    public Map<Integer,String> getOpenTime(){
+        return apiService.getOpenTimeMap();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/OpenTime")
+    public String putOpenTime(Integer key,String value){
+        return apiService.putOpenTimeMap(key,value);
+    }
+
 }

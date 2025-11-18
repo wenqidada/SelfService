@@ -2,6 +2,7 @@ package com.zwq.selfservice.service.impl;
 
 import com.zwq.selfservice.service.YunFeiService;
 import com.zwq.selfservice.util.SendHttpRequestUtil;
+import com.zwq.selfservice.util.TimeUtil;
 import com.zwq.selfservice.vo.yunfei.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Triple;
@@ -133,14 +134,26 @@ public class YunFeiServiceImpl implements YunFeiService {
         ConsumeResponse body = response.getBody();
         log.info("yunfei consume query receipt response: {}", body);
         if (body != null && body.getData() !=null && body.getData().getVerifyCount() > 0) {
-            request.setType("2");
-            ResponseEntity<ConsumeResponse> response1 = sendHttpRequestUtil.post(yunfeiUrl + "/wspace-openapi/partner/tuangou/receipt/consume", request,
-                    ConsumeResponse.class, buildHeader(), Map.of("access_token", getToken()));
-            ConsumeResponse body1 = response1.getBody();
-            log.info("yunfei consume response: {}", body1);
-            return body1;
+            if (TimeUtil.isCurrentTimeInRange(body.getData().getDealTitle())){
+                request.setType("2");
+                ResponseEntity<ConsumeResponse> response1 = sendHttpRequestUtil.post(yunfeiUrl + "/wspace-openapi/partner/tuangou/receipt/consume", request,
+                        ConsumeResponse.class, buildHeader(), Map.of("access_token", getToken()));
+                ConsumeResponse body1 = response1.getBody();
+                log.info("yunfei consume response: {}", body1);
+                return body1;
+            }else {
+                ConsumeResponse consumeResponse = new ConsumeResponse();
+                consumeResponse.setCode(400);
+                consumeResponse.setMsg("当前团购不在可用时间范围内");
+                return consumeResponse;
+            }
+
+        }else {
+            ConsumeResponse consumeResponse = new ConsumeResponse();
+            consumeResponse.setCode(400);
+            consumeResponse.setMsg("团购券码不存在或不可用");
+            return consumeResponse;
         }
-        return body;
     }
 
     @Retryable(value = {Exception.class}, maxAttempts = 3)
@@ -169,6 +182,10 @@ public class YunFeiServiceImpl implements YunFeiService {
         return Map.of("Content-Type","application/json");
     }
 
+    private boolean checkConsume(ConsumeResponse consume){
+        String dealTitle = consume.getData().getDealTitle();
+        return false;
+    }
 
     private String getToken(){
         long currentTime = System.currentTimeMillis();

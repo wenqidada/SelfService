@@ -166,7 +166,7 @@ public class ApiServiceImpl2 implements ApiService {
             ConsumeResponse consume = yunFeiService.consume(consumeRequest);
             if (consume.getCode() != 200){
                 responseData.setCode(400);
-                responseData.setMessage("验券失败,请核对券码信息");
+                responseData.setMessage(consume.getMsg());
                 return responseData;
             }
             String dealTitle = consume.getData().getDealTitle();
@@ -384,10 +384,12 @@ public class ApiServiceImpl2 implements ApiService {
             StringBuilder scheduledCommand = new StringBuilder();
             if (!openTime.isEmpty()) {
                 for (Map.Entry<Integer, String> entry : openTime.entrySet()) {
-                    String[] s = entry.getValue().split("_");
-                    long openEndTime = Long.parseLong(s[s.length - 1]);
-                    if (startTime < openEndTime){
-                        scheduledCommand.append(entry.getValue()).append(";");
+                    if (!entry.getValue().contains("vip") && !entry.getValue().contains("deposit")){
+                        String[] s = entry.getValue().split("_");
+                        long openEndTime = Long.parseLong(s[s.length - 1]);
+                        if (startTime < openEndTime){
+                            scheduledCommand.append(entry.getValue()).append(";");
+                        }
                     }
                 }
             }
@@ -664,7 +666,9 @@ public class ApiServiceImpl2 implements ApiService {
                         }
                     }
                 }else {
-                    scheduledCommand.append(entry.getValue()).append(";");
+                    if (!entry.getValue().contains("vip") && !entry.getValue().contains("deposit")){
+                        scheduledCommand.append(entry.getValue()).append(";");
+                    }
                 }
             }
             if (!scheduledCommand.isEmpty()) {
@@ -687,6 +691,14 @@ public class ApiServiceImpl2 implements ApiService {
             }
             return 6 * 60 * 60;
         }
+    }
+
+    public Map<Integer, String> getOpenTimeMap() {
+        return openTime;
+    }
+
+    public String putOpenTimeMap(Integer key,String value){
+        return openTime.put(key,value);
     }
 
     private String modifyCommand(String command) {
